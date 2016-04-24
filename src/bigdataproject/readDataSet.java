@@ -24,7 +24,7 @@ import java.util.List;
 
 public class readDataSet {
 
-    Integer[][] matrix;
+    double[][] matrix;
     
   public void run() {
 
@@ -34,7 +34,7 @@ public class readDataSet {
 	String cvsSplitBy = ";";
         int N_rows = 913;//no first row
         int N_columns=53;
-        matrix = new Integer[N_rows][N_columns];
+        matrix = new double[N_rows][N_columns];
 
 	try {
 
@@ -45,10 +45,9 @@ public class readDataSet {
                         String[] tokens = line.split(cvsSplitBy);
                         for(int j=0; j<N_columns; j++){
                             if(!tokens[j].equals("?")){
-                                int ins = Integer.parseInt(tokens[j]);
-                                matrix[i][j]= ins;
+                                matrix[i][j]= Double.parseDouble(tokens[j]);;
                             }else{
-                                matrix[i][j]= null;
+                                matrix[i][j]= -1.0;
                             }
                             
                         }

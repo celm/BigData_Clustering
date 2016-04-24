@@ -15,6 +15,14 @@ public class BigDataProject {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        readDataSet read = new readDataSet();
+        read.run();
+        for(int i=0; i<read.matrix.length; i++){
+            for(int j=0 ; j<read.matrix[0].length;j++){
+                System.out.print(read.matrix[i][j]+" ");
+            }
+            System.out.println();
+        }
     }
     
 }

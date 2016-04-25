@@ -7,7 +7,10 @@ package bigdataproject;
 
 import net.sf.javaml.clustering.Clusterer;
 import net.sf.javaml.clustering.KMeans;
+import net.sf.javaml.clustering.evaluation.AICScore;
+import net.sf.javaml.clustering.evaluation.BICScore;
 import net.sf.javaml.clustering.evaluation.ClusterEvaluation;
+import net.sf.javaml.clustering.evaluation.SumOfAveragePairwiseSimilarities;
 import net.sf.javaml.clustering.evaluation.SumOfSquaredErrors;
 import net.sf.javaml.core.Dataset;
 import net.sf.javaml.core.DefaultDataset;
@@ -31,21 +34,30 @@ public class BigDataProject {
             Instance tmp = new DenseInstance(read.matrix[i]);
             ds.add(tmp);
         }
-        Clusterer km = new KMeans();
-        Dataset[] clusters = km.cluster(ds);
-        System.out.println("Length: " + clusters.length);
-        for (int i = 0; i < clusters.length; i++) {
-            int index = i + 1;
-            System.out.println("Cluster: " + index);
-            for (Instance temp : clusters[i]) {
-                System.out.println(temp);
-            }
+        for (int i = 2; i < 30; i++) {
+            Clusterer km = new KMeans(i);
+            Dataset[] clusters = km.cluster(ds);
+            System.out.println("Length: " + clusters.length);
+            ClusterEvaluation aic = new AICScore();
+            ClusterEvaluation bic = new BICScore();
+            ClusterEvaluation sse = new SumOfSquaredErrors();
+            ClusterEvaluation saps = new SumOfAveragePairwiseSimilarities();
+            double aicScore = aic.score(clusters);
+            double bicScore = bic.score(clusters);
+            double sseScore = sse.score(clusters);
+            double sapsScore = saps.score(clusters);
+            System.out.println("AIC Score: " + aicScore);
+            System.out.println("BIC Score: " + bicScore);
+            System.out.println("SSE Score: " + sseScore);
+            System.out.println("SAPS Score: " + sapsScore);
         }
-
-        ClusterEvaluation sse = new SumOfSquaredErrors();
-        /* Measure the quality of the clustering */
-        double score = sse.score(clusters);
-        System.out.println("Score: "+score);
+//        for (int i = 0; i < clusters.length; i++) {
+//            int index = i + 1;
+//            System.out.println("Cluster: " + index);
+//            for (Instance temp : clusters[i]) {
+//                System.out.println(temp);
+//            }
+//        }
 
     }
 

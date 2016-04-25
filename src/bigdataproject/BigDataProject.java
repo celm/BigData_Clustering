@@ -34,6 +34,7 @@ public class BigDataProject {
             Instance tmp = new DenseInstance(read.matrix[i]);
             ds.add(tmp);
         }
+//iterate changing k
 //        for (int i = 2; i < 30; i++) {
 //            Clusterer km = new KMeans(i);
 //            Dataset[] clusters = km.cluster(ds);

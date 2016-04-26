@@ -5,13 +5,7 @@
  */
 package bigdataproject;
 
-import net.sf.javaml.core.Dataset;
-import net.sf.javaml.core.DefaultDataset;
-import org.apache.commons.math3.linear.BlockRealMatrix;
-import org.apache.commons.math3.linear.EigenDecomposition;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealVector;
-import org.apache.commons.math3.stat.correlation.Covariance;
+import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
 
 /**
  *
@@ -27,9 +21,13 @@ public class BigDataProject {
         read.readFromFile();
         read.filter();
         PCA pca = new PCA(read.getMatrix());
-        double[][] matrix2DPCA = pca.reduceDimension();
+        double[][] matrix2DPCA = pca.reduceDimensions();
         CreateCSV writeToFile = new CreateCSV(matrix2DPCA, "matrix");
         writeToFile.writeToFile();
+        int eps = 0;
+        int minPts = 0;
+        DBSCANClusterer dbscan = new DBSCANClusterer(eps, minPts);
+        dbscan.cluster(null);
 
     }
 

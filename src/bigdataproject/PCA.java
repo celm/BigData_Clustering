@@ -22,7 +22,7 @@ public class PCA {
         this.dataSet = dataSet;
     }
     
-    public double[][] reduceDimension(){
+    public double[][] reduceDimensions(){
         BlockRealMatrix matrix = new BlockRealMatrix(dataSet);
         Covariance cov = new Covariance(matrix, false);
         RealMatrix covarianceMatrix = cov.getCovarianceMatrix();

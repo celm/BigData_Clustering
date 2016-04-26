@@ -26,26 +26,25 @@ public class BigDataProject {
         readDataSet read = new readDataSet();
         read.readFromFile();
         read.filter();
-        if(!read.checkHashMap()){
-            System.out.println("DIOCANE");
-        }
-
-//        BlockRealMatrix matrix = new BlockRealMatrix(read.matrix);
-//        Covariance cov = new Covariance(matrix, false);
-//        RealMatrix covarianceMatrix = cov.getCovarianceMatrix();
-
-//        EigenDecomposition dec = new EigenDecomposition(covarianceMatrix);
-//        double[] eigenValues = dec.getRealEigenvalues();
-//        RealVector principalEigenVector = dec.getEigenvector(0);
-//        RealVector secondEigenVector = dec.getEigenvector(1);
-//        BlockRealMatrix pca = new BlockRealMatrix(principalEigenVector.getDimension(), 2);
-//        pca.setColumnVector(0, principalEigenVector);
-//        pca.setColumnVector(1, secondEigenVector);
-//        BlockRealMatrix matrixTranspose = matrix.transpose();
-//        BlockRealMatrix pcaTranspose = pca.transpose();
-//        BlockRealMatrix matrix2D = pcaTranspose.multiply(matrixTranspose);
-//        CreateCSV writeToFile = new CreateCSV(matrix2D.getData(), "matrix");
-//        writeToFile.writeToFile();
+        read.printHashMap();
+        double [][] matrixDouble = read.getMatrix();
+        
+        BlockRealMatrix matrix = new BlockRealMatrix(matrixDouble);
+        Covariance cov = new Covariance(matrix, false);
+        RealMatrix covarianceMatrix = cov.getCovarianceMatrix();
+        
+        EigenDecomposition dec = new EigenDecomposition(covarianceMatrix);
+        RealVector principalEigenVector = dec.getEigenvector(0);
+        RealVector secondEigenVector = dec.getEigenvector(1);
+        
+        BlockRealMatrix pca = new BlockRealMatrix(principalEigenVector.getDimension(), 2);
+        pca.setColumnVector(0, principalEigenVector);
+        pca.setColumnVector(1, secondEigenVector);
+        BlockRealMatrix matrixTranspose = matrix.transpose();
+        BlockRealMatrix pcaTranspose = pca.transpose();
+        BlockRealMatrix matrix2D = pcaTranspose.multiply(matrixTranspose);
+        CreateCSV writeToFile = new CreateCSV(matrix2D.getData(), "matrix");
+        writeToFile.writeToFile();
 
 //        System.out.println(covDouble.length);
 //        System.out.println(covDouble[0].length);

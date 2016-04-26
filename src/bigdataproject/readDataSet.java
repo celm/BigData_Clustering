@@ -16,7 +16,6 @@ import java.util.HashMap;
 
 public class readDataSet {
 
-    double[][] matrix;
     int N_columns = 50;
     int N_rows = 913;
     HashMap<Integer, double[]> samples = new HashMap();
@@ -73,24 +72,38 @@ public class readDataSet {
         for (Integer key : samples.keySet()) {
             double[] sample = samples.get(key);
             for (int i = 0; i < sample.length; i++) {
-                System.out.print(sample[i]);
+                System.out.print(sample[i]+"|");
             }
             System.out.println();
         }
     }
-    
+
     //debug function
-    boolean checkHashMap(){
+    boolean checkHashMap() {
         for (Integer key : samples.keySet()) {
             double[] sample = samples.get(key);
             for (int i = 0; i < sample.length; i++) {
-                if( sample[1] == -1.0)
+                if (sample[1] == -1.0) {
                     return false;
+                }
             }
         }
         return true;
     }
-    
+
+    double[][] getMatrix() {
+        double[][] matrixToReturn = new double[samples.size()][samples.get(0).length];
+        int i = 0;
+        for (Integer key : samples.keySet()) {
+            double[] sample = samples.get(key);
+            for (int j = 0; j < sample.length; j++) {
+                 matrixToReturn[i][j] = sample[j];
+            }
+            i++;
+        }
+        return matrixToReturn;
+    }
+
     /*
      * replace missing values with the following criteria:
      * feature 2: (domain) (eg. art, science..) replace with 0 (unknown domain)
@@ -98,30 +111,34 @@ public class readDataSet {
      * feature 6: (wikipedia user 0 or 1) replaced with 0 (values with 0 = 89% of remaining values)
      * feature 7-49 (survey answer values from 1 to 5) average of values for that dimension
      */
-
     void filter() {
         double[] sum = new double[N_columns];
         double[] missing = new double[N_columns];
-        samples.keySet().stream().map((key) -> samples.get(key)).forEach((row) -> {
+        for(Integer key : samples.keySet()){
+            double[]row = samples.get(key);
             for (int i = 0; i < row.length; i++) {
-                if (row[i] != -1.0) {
-                    sum[i] += row[i];
-                } else {
+                if(row[i] == -1.0){
                     missing[i]++;
+                }else{
+                    sum[i] += row[i];
                 }
             }
-        });
-        samples.keySet().stream().forEach((key) -> {
+        }
+        for(int i = 0; i < missing.length; i++){
+            System.out.println(i+"|"+missing[i]+"|");
+        }
+        for(Integer key : samples.keySet()){
             double[] row = samples.get(key);
             for (int i = 0; i < row.length; i++) {
                 if (row[i] == -1.0) {
                     if (i == 2 || i == 6) {
                         samples.get(key)[i] = 0.0;
                     } else {
-                        samples.get(key)[i] = sum[i] / ((double) N_columns - missing[i]);
+                        double avg = sum[i] / (N_columns - missing[i]);
+                        samples.get(key)[i] = sum[i] / ((double) N_rows - missing[i]);
                     }
                 }
             }
-        });
+        }
     }
 }

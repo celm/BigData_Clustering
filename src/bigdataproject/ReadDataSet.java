@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.util.HashMap;
 
-public class readDataSet {
+public class ReadDataSet {
 
     int N_columns = 50;
     int N_rows = 913;

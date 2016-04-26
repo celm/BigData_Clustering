@@ -5,7 +5,9 @@
  */
 package bigdataproject;
 
+import java.util.Map;
 import net.sf.javaml.core.Dataset;
+import net.sf.javaml.core.DenseInstance;
 import net.sf.javaml.core.Instance;
 
 /**
@@ -34,7 +36,7 @@ class DatasetToMatrix {
             j = 0;
         }
     }
-
+    
     void printMatrix() {
         for (int k = 0; k < samples; k++) {
             System.out.print("[");
@@ -65,5 +67,9 @@ class DatasetToMatrix {
             System.out.print(centroid[w] + " ");
         }
         System.out.print("]\n");
+    }
+    
+    DenseInstance getInstanceCentroid(){
+        return new DenseInstance(getCentroid());
     }
 }

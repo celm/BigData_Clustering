@@ -9,54 +9,119 @@ package bigdataproject;
  *
  * @author MarcoM
  */
-
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.BufferedReader;
+import java.util.HashMap;
 
 public class readDataSet {
 
     double[][] matrix;
+    int N_columns = 50;
+    int N_rows = 913;
+    HashMap<Integer, double[]> samples = new HashMap();
 
-    public void run() {
-
-        String csvFile = "src/bigdataproject/wiki4HE.csv";
+    /*
+     * load dataset from csv file and select only samples having missing values
+     * lower than 10% of their features
+     */
+    public void readFromFile() {
+        String csvFile = "wiki4HE2.csv";
         BufferedReader br = null;
-        String line = "";
+        String line;
         String cvsSplitBy = ";";
-        int N_rows = 913;//no first row
-        int N_columns = 53;
-        matrix = new double[N_rows][N_columns];
         try {
             br = new BufferedReader(new FileReader(csvFile));
             for (int i = 0; i < N_rows; i++) {
                 line = br.readLine();
                 if (line != null) {
                     String[] tokens = line.split(cvsSplitBy);
+                    double[] row = new double[N_columns];
+                    double missing = 0.0;
+                    double value;
                     for (int j = 0; j < N_columns; j++) {
                         if (!tokens[j].equals("?")) {
-                            matrix[i][j] = Double.parseDouble(tokens[j]);;
+                            value = Double.parseDouble(tokens[j]);
                         } else {
-                            matrix[i][j] = -1.0;
+                            value = -1.0;
+                            missing++;
                         }
+                        row[j] = value;
+                    }
+                    double percentage = (missing / N_columns) * 100;
+                    if (percentage < 10.0) {
+                        samples.put(i, row);
                     }
                 }
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | NumberFormatException e) {
+            System.err.println(e);
         } finally {
             if (br != null) {
                 try {
                     br.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.err.println(e);
                 }
             }
-            System.out.println("Done");
         }
     }
 
+    //debug function
+    void printHashMap() {
+        System.out.println("Samples: " + samples.size());
+        for (Integer key : samples.keySet()) {
+            double[] sample = samples.get(key);
+            for (int i = 0; i < sample.length; i++) {
+                System.out.print(sample[i]);
+            }
+            System.out.println();
+        }
+    }
+    
+    //debug function
+    boolean checkHashMap(){
+        for (Integer key : samples.keySet()) {
+            double[] sample = samples.get(key);
+            for (int i = 0; i < sample.length; i++) {
+                if( sample[1] == -1.0)
+                    return false;
+            }
+        }
+        return true;
+    }
+    
+    /*
+     * replace missing values with the following criteria:
+     * feature 2: (domain) (eg. art, science..) replace with 0 (unknown domain)
+     * feature 4: (years of experience) replaced with average of values for that dimension
+     * feature 6: (wikipedia user 0 or 1) replaced with 0 (values with 0 = 89% of remaining values)
+     * feature 7-49 (survey answer values from 1 to 5) average of values for that dimension
+     */
+
+    void filter() {
+        double[] sum = new double[N_columns];
+        double[] missing = new double[N_columns];
+        samples.keySet().stream().map((key) -> samples.get(key)).forEach((row) -> {
+            for (int i = 0; i < row.length; i++) {
+                if (row[i] != -1.0) {
+                    sum[i] += row[i];
+                } else {
+                    missing[i]++;
+                }
+            }
+        });
+        samples.keySet().stream().forEach((key) -> {
+            double[] row = samples.get(key);
+            for (int i = 0; i < row.length; i++) {
+                if (row[i] == -1.0) {
+                    if (i == 2 || i == 6) {
+                        samples.get(key)[i] = 0.0;
+                    } else {
+                        samples.get(key)[i] = sum[i] / ((double) N_columns - missing[i]);
+                    }
+                }
+            }
+        });
+    }
 }

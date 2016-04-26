@@ -5,17 +5,13 @@
  */
 package bigdataproject;
 
-import net.sf.javaml.clustering.Clusterer;
-import net.sf.javaml.clustering.KMeans;
-import net.sf.javaml.clustering.evaluation.AICScore;
-import net.sf.javaml.clustering.evaluation.BICScore;
-import net.sf.javaml.clustering.evaluation.ClusterEvaluation;
-import net.sf.javaml.clustering.evaluation.SumOfAveragePairwiseSimilarities;
-import net.sf.javaml.clustering.evaluation.SumOfSquaredErrors;
 import net.sf.javaml.core.Dataset;
 import net.sf.javaml.core.DefaultDataset;
-import net.sf.javaml.core.DenseInstance;
-import net.sf.javaml.core.Instance;
+import org.apache.commons.math3.linear.BlockRealMatrix;
+import org.apache.commons.math3.linear.EigenDecomposition;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
+import org.apache.commons.math3.stat.correlation.Covariance;
 
 /**
  *
@@ -28,12 +24,38 @@ public class BigDataProject {
      */
     public static void main(String[] args) {
         readDataSet read = new readDataSet();
-        Dataset ds = new DefaultDataset();
-        read.run();
-        for (int i = 0; i < read.matrix.length; i++) {
-            Instance tmp = new DenseInstance(read.matrix[i]);
-            ds.add(tmp);
+        read.readFromFile();
+        read.filter();
+        if(!read.checkHashMap()){
+            System.out.println("DIOCANE");
         }
+
+//        BlockRealMatrix matrix = new BlockRealMatrix(read.matrix);
+//        Covariance cov = new Covariance(matrix, false);
+//        RealMatrix covarianceMatrix = cov.getCovarianceMatrix();
+
+//        EigenDecomposition dec = new EigenDecomposition(covarianceMatrix);
+//        double[] eigenValues = dec.getRealEigenvalues();
+//        RealVector principalEigenVector = dec.getEigenvector(0);
+//        RealVector secondEigenVector = dec.getEigenvector(1);
+//        BlockRealMatrix pca = new BlockRealMatrix(principalEigenVector.getDimension(), 2);
+//        pca.setColumnVector(0, principalEigenVector);
+//        pca.setColumnVector(1, secondEigenVector);
+//        BlockRealMatrix matrixTranspose = matrix.transpose();
+//        BlockRealMatrix pcaTranspose = pca.transpose();
+//        BlockRealMatrix matrix2D = pcaTranspose.multiply(matrixTranspose);
+//        CreateCSV writeToFile = new CreateCSV(matrix2D.getData(), "matrix");
+//        writeToFile.writeToFile();
+
+//        System.out.println(covDouble.length);
+//        System.out.println(covDouble[0].length);
+//        for (int k = 0; k < eigenVectorsDouble.length; k++) {
+//            System.out.print("[");
+//            for (int w = 0; w < eigenVectorsDouble[k].length; w++) {
+//                System.out.print(eigenVectorsDouble[k][w] + " ");
+//            }
+//            System.out.print("]\n");
+//        }
 //iterate changing k
 //        for (int i = 2; i < 30; i++) {
 //            Clusterer km = new KMeans(i);
@@ -52,17 +74,16 @@ public class BigDataProject {
 //            System.out.println("SSE Score: " + sseScore);
 //            System.out.println("SAPS Score: " + sapsScore);
 //        }
-        Clusterer km = new KMeans(10);
-        Dataset[] clusters = km.cluster(ds);
-        for (int i = 0; i < clusters.length; i++) {
-            int index = i + 1;
-            DatasetToMatrix sdm = new DatasetToMatrix(clusters[i]);
-            System.out.println("\nCluster "+index+" Number of samples: "+sdm.samples+"\n");
-            sdm.printMatrix();
-            sdm.printCentroid();
-            
-        }
-
+//        Clusterer km = new KMeans(10);
+//        Dataset[] clusters = km.cluster(ds);
+//        for (int i = 0; i < clusters.length; i++) {
+//            int index = i + 1;
+//            DatasetToMatrix sdm = new DatasetToMatrix(clusters[i]);
+//            System.out.println("\nCluster "+index+" Number of samples: "+sdm.samples+"\n");
+//            sdm.printMatrix();
+//            sdm.printCentroid();
+//            
+//        }
     }
 
 }

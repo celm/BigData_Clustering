@@ -5,7 +5,8 @@
  */
 package bigdataproject;
 
-import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
+
+import org.jfree.ui.RefineryUtilities;
 
 /**
  *
@@ -20,15 +21,25 @@ public class BigDataProject {
         ReadDataSet read = new ReadDataSet();
         read.readFromFile();
         read.filter();
-        PCA pca = new PCA(read.getMatrix());
+        double[][] matrix = read.getMatrix();
+        System.out.println("SAMPLES: "+matrix.length);
+        System.out.println("DIM: "+matrix[0].length);
+        PCA pca = new PCA(matrix);
         double[][] matrix2DPCA = pca.reduceDimensions();
         CreateCSV writeToFile = new CreateCSV(matrix2DPCA, "matrix");
         writeToFile.writeToFile();
-        int eps = 0;
-        int minPts = 0;
-        DBSCANClusterer dbscan = new DBSCANClusterer(eps, minPts);
-        dbscan.cluster(null);
-
+        int eps = 100;
+        int minPts = 54;
+        KDistances dist = new KDistances(matrix);
+        dist.calculateDistances();
+        double[] array = dist.getKSortedNearestNeighbors(5);
+        final ScatterPlot demo = new ScatterPlot("DIOCANE");
+        demo.pack();
+        RefineryUtilities.centerFrameOnScreen(demo);
+        demo.setVisible(true);
+        //dist.printArray(array);
+//        DBSCANClusterer dbscan = new DBSCANClusterer(eps, minPts);
+//        List<Cluster<DoublePoint>> clusterList = dbscan.cluster(list);
+//        for (Cluster<DoublePoint> p : clusterList) {}
     }
-
 }

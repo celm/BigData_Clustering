@@ -9,10 +9,14 @@ package bigdataproject;
  *
  * @author MarcoM
  */
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.BufferedReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import org.apache.commons.math3.ml.clustering.DoublePoint;
 
 public class ReadDataSet {
 
@@ -72,7 +76,7 @@ public class ReadDataSet {
         for (Integer key : samples.keySet()) {
             double[] sample = samples.get(key);
             for (int i = 0; i < sample.length; i++) {
-                System.out.print(sample[i]+"|");
+                System.out.print(sample[i] + "|");
             }
             System.out.println();
         }
@@ -97,11 +101,20 @@ public class ReadDataSet {
         for (Integer key : samples.keySet()) {
             double[] sample = samples.get(key);
             for (int j = 0; j < sample.length; j++) {
-                 matrixToReturn[i][j] = sample[j];
+                matrixToReturn[i][j] = sample[j];
             }
             i++;
         }
         return matrixToReturn;
+    }
+
+    List<DoublePoint> getCollection() {
+        List<DoublePoint> list = new ArrayList<>();
+        for (Integer key : samples.keySet()) {
+            DoublePoint p = new DoublePoint(samples.get(key));
+            list.add(p);
+        }
+        return list;
     }
 
     /*
@@ -114,20 +127,17 @@ public class ReadDataSet {
     void filter() {
         double[] sum = new double[N_columns];
         double[] missing = new double[N_columns];
-        for(Integer key : samples.keySet()){
-            double[]row = samples.get(key);
+        for (Integer key : samples.keySet()) {
+            double[] row = samples.get(key);
             for (int i = 0; i < row.length; i++) {
-                if(row[i] == -1.0){
+                if (row[i] == -1.0) {
                     missing[i]++;
-                }else{
+                } else {
                     sum[i] += row[i];
                 }
             }
         }
-        for(int i = 0; i < missing.length; i++){
-            System.out.println(i+"|"+missing[i]+"|");
-        }
-        for(Integer key : samples.keySet()){
+        for (Integer key : samples.keySet()) {
             double[] row = samples.get(key);
             for (int i = 0; i < row.length; i++) {
                 if (row[i] == -1.0) {

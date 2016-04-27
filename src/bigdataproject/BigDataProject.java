@@ -33,7 +33,7 @@ public class BigDataProject {
         KDistances dist = new KDistances(matrix);
         dist.calculateDistances();
         double[] array = dist.getKSortedNearestNeighbors(5);
-        final ScatterPlot demo = new ScatterPlot("DIOCANE");
+        final ScatterPlot demo = new ScatterPlot("Big Data Clustering Project", matrix2DPCA);
         demo.pack();
         RefineryUtilities.centerFrameOnScreen(demo);
         demo.setVisible(true);

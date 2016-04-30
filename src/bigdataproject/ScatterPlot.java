@@ -9,12 +9,17 @@ package bigdataproject;
  *
  * @author raffaele
  */
+import java.awt.Color;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.FastScatterPlot;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.ui.ApplicationFrame;
+import org.jfree.util.ShapeUtilities;
 /**
  * A demo of the fast scatter plot.
  *
@@ -40,7 +45,7 @@ public class ScatterPlot extends ApplicationFrame {
         domainAxis.setAutoRangeIncludesZero(false);
         final NumberAxis rangeAxis = new NumberAxis("X2");
         rangeAxis.setAutoRangeIncludesZero(false);
-        final FastScatterPlot plot = new FastScatterPlot(this.data, domainAxis, rangeAxis);
+        final CustomFastScatterPlot plot = new CustomFastScatterPlot(this.data, domainAxis, rangeAxis);
         final JFreeChart chart = new JFreeChart(title, plot);
         //chart.setLegend(null);
 
@@ -54,6 +59,7 @@ public class ScatterPlot extends ApplicationFrame {
         panel.setMinimumDrawWidth(20);
         panel.setMaximumDrawWidth(2000);
         setContentPane(panel);
+        
 
     }
     

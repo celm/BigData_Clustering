@@ -9,26 +9,21 @@ package bigdataproject;
  *
  * @author raffaele
  */
-import java.awt.Color;
 import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.JFrame;
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.FastScatterPlot;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.ui.ApplicationFrame;
-import org.jfree.util.ShapeUtilities;
 /**
  * A demo of the fast scatter plot.
  *
  */
-public class ScatterPlot extends ApplicationFrame {
+public class ScatterPlot extends JFrame {
 
     /**
      * The data.
@@ -49,13 +44,6 @@ public class ScatterPlot extends ApplicationFrame {
         convertToFloat(samples);
         listToHashMap();
         HashMap<Integer, float[][]> clusterData = HashMapDoubleToFloat();
-        for(Integer i : clusterData.keySet()){
-            System.out.println("\nCLUSTER: "+i+"\n");
-            float[][] matrixCluster = clusterData.get(i);
-            KDistances dist = new KDistances(null);
-            dist.printMatrixFloat(matrixCluster);
-            
-        }
         final NumberAxis domainAxis = new NumberAxis("X1");
         domainAxis.setAutoRangeIncludesZero(false);
         final NumberAxis rangeAxis = new NumberAxis("X2");

@@ -35,9 +35,7 @@ public class CustomFastScatterPlot extends FastScatterPlot {
     }
 
     @Override
-    public void render(Graphics2D g2, Rectangle2D dataArea, PlotRenderingInfo info, CrosshairState crosshairState) {
-        //g2.setPaint(Color.BLUE);
-
+    public void render(Graphics2D g2, Rectangle2D dataArea, PlotRenderingInfo info, CrosshairState crosshairState) {     
         if (clusters != null) {
             int colorIndex = 0;
             for (Integer index : clusters.keySet()) {
@@ -49,8 +47,11 @@ public class CustomFastScatterPlot extends FastScatterPlot {
                     int transX = (int) this.getDomainAxis().valueToJava2D(x, dataArea, RectangleEdge.BOTTOM);
                     int transY = (int) this.getRangeAxis().valueToJava2D(y, dataArea, RectangleEdge.LEFT);
                     g2.setPaint(colors[colorIndex % 11]);
-                    g2.fillOval(transX, transY, size, size);
-               
+                    if(colorIndex % 2 == 0){
+                        g2.fillOval(transX, transY, size, size);
+                    }else{
+                        g2.fillRect(transX, transY, size, size);
+                    }    
                 }
                 colorIndex++;
             }

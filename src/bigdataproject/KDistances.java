@@ -6,18 +6,9 @@
 package bigdataproject;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Set;
 import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-import javafx.collections.transformation.SortedList;
 import org.apache.commons.math3.linear.BlockRealMatrix;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.ml.distance.CanberraDistance;
-import org.apache.commons.math3.ml.distance.ChebyshevDistance;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
-import org.apache.commons.math3.ml.distance.ManhattanDistance;
 
 /**
  *

@@ -9,7 +9,6 @@ package bigdataproject;
  *
  * @author MarcoM
  */
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.BufferedReader;
@@ -58,13 +57,16 @@ public class ReadDataSet {
                 }
             }
         } catch (IOException | NumberFormatException e) {
-            System.err.println(e);
+            System.err.println("File Not Found or bad file format\n"
+                    + "Make sure the file named wiki4HE2.csv is on the same path of the executable jar\n" + e);
+            System.exit(0);
         } finally {
             if (br != null) {
                 try {
                     br.close();
                 } catch (IOException e) {
-                    System.err.println(e);
+                    System.err.println("Something worng happened with the csv file\n" + e);
+                    System.exit(0);
                 }
             }
         }
@@ -81,15 +83,15 @@ public class ReadDataSet {
             System.out.println();
         }
     }
-    
-    HashMap<Integer, double[]> getHashMap(double[][] matrix){
+
+    HashMap<Integer, double[]> getHashMap(double[][] matrix) {
         HashMap<Integer, double[]> map = new HashMap<>();
-        for(int i = 0; i < matrix.length; i++){
+        for (int i = 0; i < matrix.length; i++) {
             map.put(i, matrix[i]);
         }
         return map;
     }
-    
+
     //debug function
     boolean checkHashMap() {
         for (Integer key : samples.keySet()) {

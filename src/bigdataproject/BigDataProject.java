@@ -6,6 +6,12 @@
 package bigdataproject;
 
 
+import java.util.HashMap;
+import java.util.List;
+import org.apache.commons.math3.linear.BlockRealMatrix;
+import org.apache.commons.math3.ml.clustering.Cluster;
+import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
+import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.jfree.ui.RefineryUtilities;
 
 /**
@@ -28,18 +34,31 @@ public class BigDataProject {
         double[][] matrix2DPCA = pca.reduceDimensions();
         CreateCSV writeToFile = new CreateCSV(matrix2DPCA, "matrix");
         writeToFile.writeToFile();
-        int eps = 100;
-        int minPts = 54;
-        KDistances dist = new KDistances(matrix);
+        BlockRealMatrix pcaMatrix = new BlockRealMatrix(matrix2DPCA);
+        BlockRealMatrix pcaMatrixTranspose = pcaMatrix.transpose();
+        KDistances dist = new KDistances(pcaMatrixTranspose.getData());
         dist.calculateDistances();
-        double[] array = dist.getKSortedNearestNeighbors(5);
-        final ScatterPlot demo = new ScatterPlot("Big Data Clustering Project", matrix2DPCA);
+        dist.getKSortedNearestNeighbors(5);
+        int minPts = 5;
+        double eps =  dist.disancesMaxDifference();
+        System.out.println("EPS: "+eps);
+        List<DoublePoint> list = read.getCollection(read.getHashMap(pcaMatrixTranspose.getData()));
+        DBSCANClusterer dbscan = new DBSCANClusterer(0.985, minPts);
+        List<Cluster<DoublePoint>> clusterList = dbscan.cluster(list);
+        int i = 1;
+        System.out.println("CLUSTERS: "+clusterList.size());
+        for (Cluster<DoublePoint> c : clusterList) {
+                List cluster = c.getPoints();
+                int size = cluster.size();
+                System.out.println("\nCLUSTER N."+i+" POINTS: "+size+"\n");
+                for(Object p : cluster){
+                }
+                i++;
+        }
+        final ScatterPlot demo = new ScatterPlot("Big Data Clustering Project", matrix2DPCA, clusterList);
         demo.pack();
         RefineryUtilities.centerFrameOnScreen(demo);
         demo.setVisible(true);
-        //dist.printArray(array);
-//        DBSCANClusterer dbscan = new DBSCANClusterer(eps, minPts);
-//        List<Cluster<DoublePoint>> clusterList = dbscan.cluster(list);
-//        for (Cluster<DoublePoint> p : clusterList) {}
+        
     }
 }

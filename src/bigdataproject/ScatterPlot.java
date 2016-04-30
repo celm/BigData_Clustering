@@ -12,6 +12,10 @@ package bigdataproject;
 import java.awt.Color;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.util.HashMap;
+import java.util.List;
+import org.apache.commons.math3.ml.clustering.Cluster;
+import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -30,22 +34,33 @@ public class ScatterPlot extends ApplicationFrame {
      * The data.
      */
     private float[][] data;
-
+    List<Cluster<DoublePoint>> list;
+    HashMap<Integer, double[][]> clusters;
     /**
      * Creates a new fast scatter plot.
      *
      * @param title the frame title.
      * @param samples the 2D matrix to plot.
      */
-    public ScatterPlot(final String title, double[][]samples) {
+    public ScatterPlot(final String title, double[][]samples, List<Cluster<DoublePoint>> list) {
 
         super(title);
+        this.list = list;
         convertToFloat(samples);
+        listToHashMap();
+        HashMap<Integer, float[][]> clusterData = HashMapDoubleToFloat();
+        for(Integer i : clusterData.keySet()){
+            System.out.println("\nCLUSTER: "+i+"\n");
+            float[][] matrixCluster = clusterData.get(i);
+            KDistances dist = new KDistances(null);
+            dist.printMatrixFloat(matrixCluster);
+            
+        }
         final NumberAxis domainAxis = new NumberAxis("X1");
         domainAxis.setAutoRangeIncludesZero(false);
         final NumberAxis rangeAxis = new NumberAxis("X2");
         rangeAxis.setAutoRangeIncludesZero(false);
-        final CustomFastScatterPlot plot = new CustomFastScatterPlot(this.data, domainAxis, rangeAxis);
+        final CustomFastScatterPlot plot = new CustomFastScatterPlot(this.data, domainAxis, rangeAxis, clusterData);
         final JFreeChart chart = new JFreeChart(title, plot);
         //chart.setLegend(null);
 
@@ -63,6 +78,18 @@ public class ScatterPlot extends ApplicationFrame {
 
     }
     
+    private HashMap<Integer, float[][]> HashMapDoubleToFloat(){
+        HashMap<Integer, float[][]> hashMapFloat = new HashMap<>();
+        if(clusters != null){
+            for(Integer i : clusters.keySet()){
+                double[][] matrix = clusters.get(i);
+                float[][] matrixFloat = convertToFloat2(matrix);
+                hashMapFloat.put(i, matrixFloat);
+            }
+        }
+        return hashMapFloat;
+    }
+    
     private void convertToFloat(double[][] matrix) {
         data = new float[matrix.length][matrix[0].length];
         for(int i = 0; i < matrix.length; i++){
@@ -71,4 +98,36 @@ public class ScatterPlot extends ApplicationFrame {
             }
         }
     }
+    
+    float[][] convertToFloat2(double[][] matrix) {
+        float[][] floatMatrix = new float[matrix.length][matrix[0].length];
+        for(int i = 0; i < matrix.length; i++){
+            for(int j = 0; j < matrix[i].length; j++){
+                floatMatrix[i][j] = (float) matrix[i][j];
+            }
+        }
+        return floatMatrix;
+    }
+    
+    private void listToHashMap(){
+        if(list != null){
+            int index = 0;
+            clusters = new HashMap<>();
+            for (Cluster<DoublePoint> c : list) {
+                List cluster = c.getPoints();
+                int size = cluster.size();
+                double[][] clusterMatrix = new double[size][2];
+                int i = 0;
+                for(Object p : cluster){
+                    DoublePoint point = (DoublePoint) p;
+                    clusterMatrix[i++] = point.getPoint();    
+                }
+                clusters.put(index++, clusterMatrix);
+            }
+        }
+    }
+    
+    
+    
+   
 }

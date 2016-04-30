@@ -81,7 +81,15 @@ public class ReadDataSet {
             System.out.println();
         }
     }
-
+    
+    HashMap<Integer, double[]> getHashMap(double[][] matrix){
+        HashMap<Integer, double[]> map = new HashMap<>();
+        for(int i = 0; i < matrix.length; i++){
+            map.put(i, matrix[i]);
+        }
+        return map;
+    }
+    
     //debug function
     boolean checkHashMap() {
         for (Integer key : samples.keySet()) {
@@ -108,10 +116,10 @@ public class ReadDataSet {
         return matrixToReturn;
     }
 
-    List<DoublePoint> getCollection() {
+    List<DoublePoint> getCollection(HashMap<Integer, double[]> map) {
         List<DoublePoint> list = new ArrayList<>();
-        for (Integer key : samples.keySet()) {
-            DoublePoint p = new DoublePoint(samples.get(key));
+        for (Integer key : map.keySet()) {
+            DoublePoint p = new DoublePoint(map.get(key));
             list.add(p);
         }
         return list;

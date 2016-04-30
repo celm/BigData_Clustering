@@ -32,9 +32,9 @@ public class PCA {
         BlockRealMatrix pca = new BlockRealMatrix(principalEigenVector.getDimension(), 2);
         pca.setColumnVector(0, principalEigenVector);
         pca.setColumnVector(1, secondEigenVector);
-        BlockRealMatrix matrixTranspose = matrix.transpose();
         BlockRealMatrix pcaTranspose = pca.transpose();
-        BlockRealMatrix matrix2D = pcaTranspose.multiply(matrixTranspose);
+        BlockRealMatrix columnVectorMatrix = matrix.transpose();
+        BlockRealMatrix matrix2D = pcaTranspose.multiply(columnVectorMatrix);
         return matrix2D.getData();
     }
 }

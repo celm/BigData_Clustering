@@ -14,6 +14,7 @@ import java.util.stream.IntStream;
 import javafx.collections.transformation.SortedList;
 import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.ml.distance.CanberraDistance;
 import org.apache.commons.math3.ml.distance.ChebyshevDistance;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
 import org.apache.commons.math3.ml.distance.ManhattanDistance;
@@ -26,11 +27,14 @@ public class KDistances {
 
     double[][] samples;
     double[][] distanceMatrix;
+    double[] Karray;
 
     public KDistances(double[][] samples) {
-        this.samples = samples;
-        int size = samples.length;
-        distanceMatrix = new double[size][size];
+        if (samples != null) {
+            this.samples = samples;
+            int size = samples.length;
+            distanceMatrix = new double[size][size];
+        }
     }
 
     public void calculateDistances() {
@@ -46,18 +50,14 @@ public class KDistances {
         BlockRealMatrix distTranspose = dist.transpose();
         dist = dist.add(distTranspose);
         distanceMatrix = dist.getData();
-        Random rand = new Random();
-        double [] point = distanceMatrix[rand.nextInt(distanceMatrix.length -1)];
-        Arrays.sort(point);
-        printArray(point);
     }
 
-    public double[] getKSortedNearestNeighbors(int k) {
+    void getKSortedNearestNeighbors(int k) {
         double[] allK = new double[k * samples.length];
         int index = 0;
         for (double[] distRow : distanceMatrix) {
             Arrays.sort(distRow);
-            double[] subK = Arrays.copyOfRange(distRow, 1, k+1);
+            double[] subK = Arrays.copyOfRange(distRow, 1, k + 1);
             for (int j = 0; j < subK.length; j++) {
                 final double value = subK[j];
                 if (!DoubleStream.of(allK).anyMatch(x -> x == value)) {
@@ -65,9 +65,9 @@ public class KDistances {
                 }
             }
         }
-        double[] finalArray =  Arrays.copyOfRange(allK, 0, index);
+        double[] finalArray = Arrays.copyOfRange(allK, 0, index);
         Arrays.sort(finalArray);
-        return finalArray;
+        Karray = finalArray;
     }
 
     //debug function
@@ -79,11 +79,44 @@ public class KDistances {
             System.out.println();
         }
     }
-    
+
+    double disancesMaxDifference() {
+        double diff = 0.0;
+        double epsilon = 0.0;
+        int index = 0;
+        for (int i = 1; i < Karray.length; i++) {
+            double dist = Karray[i] - Karray[i - 1];
+            if (dist > diff) {
+                diff = dist;
+                index = i - 1;
+                epsilon = Karray[i - 1];
+            }
+        }
+        return epsilon;
+    }
+
     //debug function
-    void printArray(double[] array){
-        for(int i = 0; i < array.length; i++){
+    void printArray(double[] array) {
+        for (int i = 0; i < array.length; i++) {
             System.out.println(array[i]);
+        }
+    }
+
+    void printMatrix(double[][] matrix) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                System.out.print(matrix[i][j] + "|");
+            }
+            System.out.println();
+        }
+    }
+
+    void printMatrixFloat(float[][] matrix) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                System.out.print(matrix[i][j] + "|");
+            }
+            System.out.println();
         }
     }
 

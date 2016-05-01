@@ -32,13 +32,10 @@ public class KMeansKFinder {
             List<Cluster<DoublePoint>> clusterList = kmeans.cluster(list);
             double[] avDistances = new double[k];
             int index = 0;
-            System.out.println("\nSUDDIVISION K: "+k+"\n");
             for (Cluster<DoublePoint> c : clusterList) {
                 List cluster = c.getPoints();
                 int size = cluster.size();
                 double[] centroid = getCentroid(cluster);
-                System.out.println("CENTROID CLUSTER N."+(index+1));
-                printVector(centroid);
                 double distanceSum = 0.0;
                 for (Object p : cluster) {
                     DoublePoint point = (DoublePoint) p;
@@ -47,7 +44,6 @@ public class KMeansKFinder {
                     distanceSum += dist.compute(centroid, pointDouble);
                 }
                 avDistances[index] = distanceSum / size;
-                System.out.println("AVERAGE DISTANCE: "+avDistances[index]);
                 index++;
             }
             double avDistSum = 0.0;
@@ -56,7 +52,6 @@ public class KMeansKFinder {
             }
             double newAvDist = avDistSum / avDistances.length;
             double difference = Math.abs(newAvDist - oldAvDist);
-            System.out.println("AVERAGE DISTANCES: "+newAvDist+" OLD AVERAGE: "+oldAvDist+" DIFFERENCE: "+difference);
             if(difference >= epsilon){
                 oldAvDist = newAvDist;
             }

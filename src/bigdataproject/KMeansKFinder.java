@@ -27,8 +27,8 @@ public class KMeansKFinder {
 
     public int find(double epsilon) {
         double oldAvDist = 0.0;
-        for (int k = 2; k < 100; k++) {
-            KMeansPlusPlusClusterer kmeans = new KMeansPlusPlusClusterer(k, 100, new EuclideanDistance());
+        for (int k = 2; k < numSamples; k++) {
+            KMeansPlusPlusClusterer kmeans = new KMeansPlusPlusClusterer(k, 1000, new EuclideanDistance());
             List<Cluster<DoublePoint>> clusterList = kmeans.cluster(list);
             double[] avDistances = new double[k];
             int index = 0;

@@ -111,6 +111,8 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
 
+        jLabel8.setForeground(new java.awt.Color(246, 9, 9));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -201,6 +203,7 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
+        this.jLabel8.setText("");
         this.jSpinner2.setEnabled(!this.jCheckBox2.isSelected());
         this.jTextField1.setEnabled(!this.jCheckBox2.isSelected());
     }//GEN-LAST:event_jCheckBox2ActionPerformed
@@ -210,6 +213,7 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        this.jLabel8.setText("");
         this.jCheckBox1.setSelected(false);
         this.jCheckBox2.setSelected(false);
         kMeans = this.jComboBox1.getSelectedIndex() == 0;
@@ -229,6 +233,7 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.jLabel8.setText("");
         ReadDataSet read = new ReadDataSet();
         read.readFromFile();
         read.filter();
@@ -238,29 +243,34 @@ public class MainJFrame extends javax.swing.JFrame {
         BlockRealMatrix pcaMatrix = new BlockRealMatrix(matrix2DPCA);
         BlockRealMatrix pcaMatrixTranspose = pcaMatrix.transpose();
         List<DoublePoint> list = read.getCollection(read.getHashMap(pcaMatrixTranspose.getData()));
-        List<Cluster<DoublePoint>> clusterList = null;
+        List<Cluster<DoublePoint>> clusterList;
         if (kMeans) {
-            int k = 0;
+            int k;
             if (this.jCheckBox1.isSelected()) {
                 KMeansKFinder kFinder = new KMeansKFinder(list);
                 k = kFinder.find(0.15);
             } else {
                 k = (int) this.jSpinner1.getValue();
             }
-            KMeansPlusPlusClusterer kmeans = new KMeansPlusPlusClusterer(k, 100, new EuclideanDistance());
+            KMeansPlusPlusClusterer kmeans = new KMeansPlusPlusClusterer(k, 1000, new EuclideanDistance());
             clusterList = kmeans.cluster(list);
         } else {
-            int minPts = 0;
-            double eps = 0.0;
+            int minPts;
+            double eps;
             if (this.jCheckBox2.isSelected()) {
                 minPts = 5;
                 KDistances dist = new KDistances(pcaMatrixTranspose.getData());
                 dist.calculateDistances();
                 dist.getKSortedNearestNeighbors(5);
                 eps = dist.disancesMaxDifference();
-            }else{
+            } else {
                 minPts = (int) this.jSpinner2.getValue();
-                eps = Double.parseDouble(this.jTextField1.getText());
+                try {
+                    eps = Double.parseDouble(this.jTextField1.getText());
+                } catch (NumberFormatException e) {
+                    this.jLabel8.setText("Wrong eps Value");
+                    return;
+                }
             }
             DBSCANClusterer dbscan = new DBSCANClusterer(eps, minPts);
             clusterList = dbscan.cluster(list);

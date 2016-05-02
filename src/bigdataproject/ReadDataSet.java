@@ -75,15 +75,16 @@ public class ReadDataSet {
     //debug function
     void printHashMap() {
         System.out.println("Samples: " + samples.size());
-        for (Integer key : samples.keySet()) {
-            double[] sample = samples.get(key);
+        samples.keySet().stream().map((key) -> samples.get(key)).map((sample) -> {
             for (int i = 0; i < sample.length; i++) {
                 System.out.print(sample[i] + "|");
             }
+            return sample;
+        }).forEach((_item) -> {
             System.out.println();
-        }
+        });
     }
-
+    //double matrix to HashMap
     HashMap<Integer, double[]> getHashMap(double[][] matrix) {
         HashMap<Integer, double[]> map = new HashMap<>();
         for (int i = 0; i < matrix.length; i++) {
@@ -104,26 +105,24 @@ public class ReadDataSet {
         }
         return true;
     }
-
+    
+    //from HashMap to double matrix
     double[][] getMatrix() {
         double[][] matrixToReturn = new double[samples.size()][samples.get(0).length];
         int i = 0;
         for (Integer key : samples.keySet()) {
             double[] sample = samples.get(key);
-            for (int j = 0; j < sample.length; j++) {
-                matrixToReturn[i][j] = sample[j];
-            }
+            System.arraycopy(sample, 0, matrixToReturn[i], 0, sample.length);
             i++;
         }
         return matrixToReturn;
     }
-
+    //HashMap to List Collection useful as input for clustering algorithm objects
     List<DoublePoint> getCollection(HashMap<Integer, double[]> map) {
         List<DoublePoint> list = new ArrayList<>();
-        for (Integer key : map.keySet()) {
-            DoublePoint p = new DoublePoint(map.get(key));
+        map.keySet().stream().map((key) -> new DoublePoint(map.get(key))).forEach((p) -> {
             list.add(p);
-        }
+        });
         return list;
     }
 
@@ -137,8 +136,7 @@ public class ReadDataSet {
     void filter() {
         double[] sum = new double[N_columns];
         double[] missing = new double[N_columns];
-        for (Integer key : samples.keySet()) {
-            double[] row = samples.get(key);
+        samples.keySet().stream().map((key) -> samples.get(key)).forEach((row) -> {
             for (int i = 0; i < row.length; i++) {
                 if (row[i] == -1.0) {
                     missing[i]++;
@@ -146,19 +144,18 @@ public class ReadDataSet {
                     sum[i] += row[i];
                 }
             }
-        }
-        for (Integer key : samples.keySet()) {
+        });
+        samples.keySet().stream().forEach((key) -> {
             double[] row = samples.get(key);
             for (int i = 0; i < row.length; i++) {
                 if (row[i] == -1.0) {
                     if (i == 2 || i == 6) {
                         samples.get(key)[i] = 0.0;
                     } else {
-                        double avg = sum[i] / (N_columns - missing[i]);
-                        samples.get(key)[i] = sum[i] / ((double) N_rows - missing[i]);
+                        samples.get(key)[i] = (double) Math.round(sum[i] / ((double) N_rows - missing[i]));
                     }
                 }
             }
-        }
+        });
     }
 }

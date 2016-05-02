@@ -55,7 +55,7 @@ public class MainJFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Big Data Clustering Project");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "KMeans", "DBScan" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "KMeans", "DBSCAN" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -258,11 +258,13 @@ public class MainJFrame extends javax.swing.JFrame {
             int minPts;
             double eps;
             if (this.jCheckBox2.isSelected()) {
-                minPts = 5;
-                KDistances dist = new KDistances(pcaMatrixTranspose.getData());
-                dist.calculateDistances();
-                dist.getKSortedNearestNeighbors(5);
-                eps = dist.disancesMaxDifference();
+                minPts = 6;
+                //KDistances dist = new KDistances(pcaMatrixTranspose.getData());
+                //dist.calculateDistances();
+                //dist.getKSortedNearestNeighbors(minPts);
+                //dist.printKdistances();
+                eps = 1.0;
+                System.out.println("EPS: "+eps);
             } else {
                 minPts = (int) this.jSpinner2.getValue();
                 try {

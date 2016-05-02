@@ -18,7 +18,6 @@ import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.ui.ApplicationFrame;
 /**
  * A demo of the fast scatter plot.
  *

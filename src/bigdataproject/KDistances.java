@@ -5,6 +5,7 @@
  */
 package bigdataproject;
 
+import java.io.FileWriter;
 import java.util.Arrays;
 import java.util.stream.DoubleStream;
 import org.apache.commons.math3.linear.BlockRealMatrix;
@@ -48,7 +49,7 @@ public class KDistances {
         int index = 0;
         for (double[] distRow : distanceMatrix) {
             Arrays.sort(distRow);
-            double[] subK = Arrays.copyOfRange(distRow, 1, k + 1);
+            double[] subK = Arrays.copyOfRange(distRow, 1, k);
             for (int j = 0; j < subK.length; j++) {
                 final double value = subK[j];
                 if (!DoubleStream.of(allK).anyMatch(x -> x == value)) {
@@ -71,19 +72,16 @@ public class KDistances {
         }
     }
 
-    double disancesMaxDifference() {
-        double diff = 0.0;
-        double epsilon = 0.0;
-        int index = 0;
-        for (int i = 1; i < Karray.length; i++) {
-            double dist = Karray[i] - Karray[i - 1];
-            if (dist > diff) {
-                diff = dist;
-                index = i - 1;
-                epsilon = Karray[i - 1];
+    void printKdistances() {
+        try {
+            FileWriter writer = new FileWriter("eps.csv");
+            for (int i = 0; i < Karray.length; i++) {
+                writer.append(String.valueOf(Karray[i]));
+                writer.append("\n");
             }
+        } catch (Exception e) {
+            System.out.println(e);
         }
-        return epsilon;
     }
 
     //debug function
@@ -92,7 +90,7 @@ public class KDistances {
             System.out.println(array[i]);
         }
     }
-
+    //debug function
     void printMatrix(double[][] matrix) {
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {

@@ -130,7 +130,7 @@
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="2">
             <StringItem index="0" value="KMeans"/>
-            <StringItem index="1" value="DBScan"/>
+            <StringItem index="1" value="DBSCAN"/>
           </StringArray>
         </Property>
       </Properties>

@@ -249,9 +249,8 @@ public class MainJFrame extends javax.swing.JFrame {
             if (this.jCheckBox1.isSelected()) {
                 KMeansKFinder kFinder = new KMeansKFinder(list);
                 k = kFinder.find(0.15);
-            } else {
+            } else 
                 k = (int) this.jSpinner1.getValue();
-            }
             KMeansPlusPlusClusterer kmeans = new KMeansPlusPlusClusterer(k, 1000, new EuclideanDistance());
             clusterList = kmeans.cluster(list);
         } else {
@@ -264,7 +263,6 @@ public class MainJFrame extends javax.swing.JFrame {
                 //dist.getKSortedNearestNeighbors(minPts);
                 //dist.printKdistances();
                 eps = 1.0;
-                System.out.println("EPS: "+eps);
             } else {
                 minPts = (int) this.jSpinner2.getValue();
                 try {

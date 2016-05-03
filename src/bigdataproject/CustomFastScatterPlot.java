@@ -27,6 +27,7 @@ public class CustomFastScatterPlot extends FastScatterPlot {
         Color.BLACK, Color.PINK, Color.ORANGE,Color.LIGHT_GRAY,Color.GRAY,
         Color.CYAN,Color.DARK_GRAY
     };
+    String[] colorArray = {"Red","Blue","Yellow","Green","Magenta","Black","Pink","Orange","Light Grey","Gray","Cyan","Dark Gray"};
 
     public CustomFastScatterPlot(float[][] data, ValueAxis domainAxis, ValueAxis rangeAxis, HashMap<Integer, float[][]> clusters) {
         super(data, domainAxis, rangeAxis);
@@ -37,24 +38,30 @@ public class CustomFastScatterPlot extends FastScatterPlot {
     @Override
     public void render(Graphics2D g2, Rectangle2D dataArea, PlotRenderingInfo info, CrosshairState crosshairState) {     
         if (clusters != null) {
-            int colorIndex = 0;
+            int colorIndex = 0, points = 0;
+            String shape = "";
             for (Integer index : clusters.keySet()) {
                 float[][] clusterFloat = clusters.get(index);
-                for (int i = 0; i < clusterFloat.length; i++) {
-                    float x = clusterFloat[i][0];
-                    float y = clusterFloat[i][1];
-                    int size = 5;
+                for (float[] clusterFloat1 : clusterFloat) {
+                    points++;
+                    float x = clusterFloat1[0];
+                    float y = clusterFloat1[1];
+                    int size = 6;
                     int transX = (int) this.getDomainAxis().valueToJava2D(x, dataArea, RectangleEdge.BOTTOM);
                     int transY = (int) this.getRangeAxis().valueToJava2D(y, dataArea, RectangleEdge.LEFT);
                     g2.setPaint(colors[colorIndex % 11]);
                     if(colorIndex % 2 == 0){
                         g2.fillOval(transX, transY, size, size);
+                        shape = "Round";
                     }else{
                         g2.fillRect(transX, transY, size, size);
+                        shape = "Square";
                     }    
                 }
+                System.out.println("Cluster number: "+colorIndex+" Points: "+clusterFloat.length+ " Shape: "+shape+" Color: "+colorArray[colorIndex % 11]);
                 colorIndex++;
             }
+            System.out.println("\nClustering done! Total clusters: "+colorIndex+" Total points: "+points+"\n");
         }
     }
 
